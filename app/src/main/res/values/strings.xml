@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">ConnectToDBTest</string>
+    <string name="login">Login</string>
+    <string name="enter_email">enter email</string>
+    <string name="enter_password">enter password</string>
+    <string name="error_login">error al iniciar sesión</string>
+    <string name="registration">Registration</string>
+    <string name="enter_your_name">enter your name</string>
+    <string name="name_user">Name_user</string>
+    <string name="email_user">email_user</string>
+    <string name="logout">logout</string>
+    <string name="fetch">fetch user</string>
+</resources>
