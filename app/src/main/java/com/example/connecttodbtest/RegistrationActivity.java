@@ -41,6 +41,7 @@ public class RegistrationActivity extends AppCompatActivity {
             String url = "http://192.168.1.105/ConnectToDBTest/register.php";
             @SuppressLint("SetTextI18n")
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
+                AlertUtils.shortToast(RegistrationActivity.this,  response);
                 if (response.equals("success")) {
                     binding.loading.setVisibility(View.GONE);
                     binding.errorLogin.setVisibility(View.GONE);
