@@ -2,31 +2,32 @@ package com.example.connecttodbtest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.connecttodbtest.databinding.ActivityRegistrationBinding;
+import com.example.connecttodbtest.utils.AlertUtils;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class RegistrationActivity extends AppCompatActivity {
-
     private ActivityRegistrationBinding binding;
-    TextInputEditText name;
-    TextInputEditText email;
-    TextInputEditText password;
-
-    TextView error_login;
-
-    MaterialButton register;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,37 +35,36 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
         binding = ActivityRegistrationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        name = binding.name;
-        email = binding.email;
-        password = binding.password;
-        register = binding.registration;
-        error_login = binding.errorLogin;
-        register.setOnClickListener(v -> {
-            String name = this.name.getText().toString();
-            String email = this.email.getText().toString();
-            String password = this.password.getText().toString();
-            if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                return;
-            }else{
-                RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                String url = "http://192.168.1.105/ConnectToDBTest/";
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                        response -> {
-                            error_login.setVisibility(TextView.VISIBLE);
-                        }, error -> {
-                    Log.d("Error is: ", error.toString());
-                }){
-                    @Override
-                    protected Map<String, String> getParams() {
-                        Map<String, String> params = new HashMap<>();
-                        params.put("name", name);
-                        params.put("email", email);
-                        params.put("password", password);
-                        return params;
-                    }
-                };
-            }
+        binding.registration.setOnClickListener(v -> {
+            binding.loading.setVisibility(View.VISIBLE);
+            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+            String url = "http://192.168.1.105/ConnectToDBTest/register.php";
+            @SuppressLint("SetTextI18n")
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
+                if (response.equals("success")) {
+                    binding.loading.setVisibility(View.GONE);
+                    binding.errorLogin.setVisibility(View.GONE);
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    binding.errorLogin.setVisibility(View.VISIBLE);
+                    binding.errorLogin.setText("Registration Failed Please try again");
+                }
+            }, error -> {
+                binding.errorLogin.setVisibility(View.VISIBLE);
+                binding.errorLogin.setText("Registration Failed Please try again");
+            }) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("name", Objects.requireNonNull(binding.name.getText()).toString());
+                    params.put("email", Objects.requireNonNull(binding.email.getText()).toString());
+                    params.put("password", Objects.requireNonNull(binding.password.getText()).toString());
+                    return params;
+                }
+            };
+            queue.add(stringRequest);
         });
     }
 }

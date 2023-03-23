@@ -10,4 +10,5 @@
     <string name="email_user">email_user</string>
     <string name="logout">logout</string>
     <string name="fetch">fetch user</string>
+    <string name="registrarte">Oprime acá para registrarte !!</string>
 </resources>
